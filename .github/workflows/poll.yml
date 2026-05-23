@@ -3,7 +3,12 @@ name: Poll Trump Truth Social
 on:
   schedule:
     - cron: "*/5 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      max_new:
+        description: "(可选) 单次最多推送的新推文数. 留空=默认8. 临时补发可填20."
+        required: false
+        default: ""
 
 concurrency:
   group: poll
@@ -40,7 +45,7 @@ jobs:
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_IDS: ${{ secrets.TELEGRAM_CHAT_IDS }}
-          MAX_NEW_PER_RUN: ${{ vars.MAX_NEW_PER_RUN || '8' }}
+          MAX_NEW_PER_RUN: ${{ inputs.max_new || vars.MAX_NEW_PER_RUN || '8' }}
           LOG_LEVEL: INFO
         run: python src/bot.py
 

@@ -1,10 +1,11 @@
 # Trump Truth Social → Telegram Bot
 
-把特朗普总统在 Truth Social 的最新推文实时（每 5 分钟）转发到你的 Telegram。
+把特朗普总统在 Truth Social 的最新推文实时（每 5 分钟）转发到你的 Telegram，并支持在 Telegram 内发命令查询历史推文。
 
 - 数据源：[trumpstruth.org](https://trumpstruth.org)（非营利机构 Defending Democracy Together 维护的公开 RSS 归档），无需 Truth Social 账号。
 - 内容：英文原文 + 中文翻译 + 图片/视频（带 AI 生成的中英文图片描述）+ 原帖直达链接。
 - 部署：GitHub Actions 24 小时自动跑，无需开机、无需服务器、无需信用卡。
+- **交互式命令**：`/recent N`、`/date YYYY-MM-DD`、`/post <id>`、`/help` —— 直接在 Telegram 给 bot 发即可。
 
 ---
 
@@ -131,7 +132,25 @@ py src/bot.py
 
 ---
 
-## 5. 调整与玩法
+## 5. 在 Telegram 里发命令查询历史推文
+
+直接给 `@fbuilders_bot` 发以下命令（建议优先用对它发过 `/start` 的账号）：
+
+| 命令 | 作用 | 示例 |
+|---|---|---|
+| `/help` | 显示帮助 | `/help` |
+| `/recent N` | 推送最近 N 条历史推文（1–20） | `/recent 10` |
+| `/date YYYY-MM-DD` | 推送某天的所有推文（最多 25 条） | `/date 2026-05-20` |
+| `/post <id>` | 推送特定推文（id 是 trumpstruth.org/statuses/ 后面的数字） | `/post 38716` |
+
+**注意**：
+- 命令响应延迟 0–5 分钟（GitHub Actions 5 分钟跑一次时才处理你的命令）。这是免费方案的固有限制。
+- 查询结果**只发回给发起命令的账号**（不会打扰另一个账号）。
+- 只有 `TELEGRAM_CHAT_IDS` 列表里的账号可以发命令，其他人的命令会被忽略。
+
+如果想立刻补发一批历史推文（不等命令的 5 分钟延迟）：去 GitHub 仓库 `Actions` → `Poll Trump Truth Social` → `Run workflow` → 在 `max_new` 输入框填想发的条数（比如 `20`）→ `Run workflow`。
+
+## 6. 调整与玩法
 
 | 需求 | 怎么改 |
 |---|---|
@@ -143,7 +162,7 @@ py src/bot.py
 
 ---
 
-## 6. 故障排查
+## 7. 故障排查
 
 | 现象 | 排查 |
 |---|---|
@@ -156,7 +175,7 @@ py src/bot.py
 
 ---
 
-## 7. 隐私与合规
+## 8. 隐私与合规
 
 - **数据源**：[trumpstruth.org](https://trumpstruth.org/faq) 是 Defending Democracy Together 运营的公开归档，仅含 @realDonaldTrump 的公开发帖。
 - **本项目**：仅做 RSS 转发与翻译，不收集你的任何个人数据，不与 Truth Social 直接交互。
@@ -164,7 +183,7 @@ py src/bot.py
 
 ---
 
-## 8. 文件结构
+## 9. 文件结构
 
 ```
 trump-truth-telegram-bot/
@@ -180,6 +199,6 @@ trump-truth-telegram-bot/
 
 ---
 
-## 9. License
+## 10. License
 
 仅供个人学习与信息消费用途。Trump 的 Truth Social 内容版权归原作者所有；trumpstruth.org 数据使用请遵守其[服务条款](https://trumpstruth.org/faq)。
