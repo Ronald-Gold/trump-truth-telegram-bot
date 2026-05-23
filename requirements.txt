@@ -1,0 +1,4 @@
+requests>=2.32,<3
+feedparser>=6.0,<7
+beautifulsoup4>=4.12,<5
+deep-translator>=1.11,<2
